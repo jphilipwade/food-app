@@ -1,4 +1,5 @@
 ﻿using API.Dtos.Ingredient;
+using API.Dtos.Recipe;
 using API.Entities;
 
 namespace API.Services;
@@ -6,6 +7,8 @@ namespace API.Services;
 public interface IIngredientService
 {
     Task<ServiceResponse<IEnumerable<GetIngredientDto>>> GetAllIngredients();
-    
-    // TODO: CRUD
+    Task<ServiceResponse<GetIngredientDto>> CreateIngredient(AddIngredientDto addIngredientDto);
+    Task<ServiceResponse<GetIngredientDto>> RetrieveIngredient(int id);
+    Task<ServiceResponse<GetIngredientDto>> UpdateIngredient(UpdateIngredientDto updateIngredientDto);
+    Task<ServiceResponse<GetIngredientDto>> DeleteIngredient(int id);
 }

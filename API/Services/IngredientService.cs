@@ -31,8 +31,67 @@ public class IngredientService : IIngredientService
         {
             response.Success = false;
             response.Message = e.Message;
+            response.StatusCode = StatusCodes.Status500InternalServerError;
         }
 
         return response;
+    }
+
+    public async Task<ServiceResponse<GetIngredientDto>> CreateIngredient(AddIngredientDto addIngredientDto)
+    {
+        var response = new ServiceResponse<GetIngredientDto>();
+
+        try
+        {
+            var newIngredient = _mapper.Map<Ingredient>(addIngredientDto);
+            await _context.Ingredients.AddAsync(newIngredient);
+            await _context.SaveChangesAsync();
+            response.Data = _mapper.Map<GetIngredientDto>(newIngredient);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+            response.StatusCode = StatusCodes.Status500InternalServerError;
+        }
+        
+        return response;
+    }
+
+    public async Task<ServiceResponse<GetIngredientDto>> RetrieveIngredient(int id)
+    {
+        var response = new ServiceResponse<GetIngredientDto>();
+
+        try
+        {
+            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == id);
+
+            if (ingredient is null)
+            {
+                response.Success = false;
+                response.Message = "Ingredient not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            response.Data = _mapper.Map<GetIngredientDto>(ingredient);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+        }
+        
+        return response;
+    }
+
+    public async Task<ServiceResponse<GetIngredientDto>> UpdateIngredient(UpdateIngredientDto updateIngredientDto)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<ServiceResponse<GetIngredientDto>> DeleteIngredient(int id)
+    {
+        throw new NotImplementedException();
     }
 }

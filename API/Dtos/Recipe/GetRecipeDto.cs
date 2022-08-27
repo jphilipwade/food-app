@@ -1,4 +1,5 @@
 ﻿using API.Dtos.Ingredient;
+using API.Entities;
 
 namespace API.Dtos.Recipe;
 
