@@ -22,20 +22,14 @@ public class RecipesController : BaseApiController
     public async Task<ActionResult<ServiceResponse<IEnumerable<GetRecipeDto>>>> GetRecipes()
     {
         var result = await _recipeService.GetAllRecipes();
-        return Ok(result);
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
     }
 
     [HttpPost]
     [Route("ingredient")]
-    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipeIngredient(AddRecipeIngredientDto addRecipeIngredientDto)
+    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
     {
-        var result = await _recipeService.AddRecipeIngredient(addRecipeIngredientDto);
-
-        if (result.Success)
-        {
-            return Ok(result);    
-        }
-
-        return NotFound(result.Message);
+        var result = await _recipeService.CreateRecipeIngredientQuantity(addRecipeIngredientQuantityDto);
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
     }
 }

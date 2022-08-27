@@ -8,5 +8,5 @@ public class GetRecipeDto
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public List<GetIngredientDto> Ingredients { get; set; }
+    public List<GetIngredientQuantityDto> Ingredients { get; set; }
 }

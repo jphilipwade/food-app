@@ -6,6 +6,6 @@ public class Ingredient
     public string Name { get; set; }
     public string Description { get; set; }
     public string Size { get; set; }
-    public List<Recipe> Recipes { get; set; }
+ 
     public List<IngredientQuantity> IngredientQuantities { get; set; }
 }
