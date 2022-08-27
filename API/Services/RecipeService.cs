@@ -89,6 +89,13 @@ public class RecipeService : IRecipeService
         return response;
     }
 
+    public async Task<ServiceResponse<DeleteRecipeDto>> DeleteRecipe(int id)
+    {
+        var response = new ServiceResponse<DeleteRecipeDto>();
+
+        return response;
+    }
+
     public async Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
     {
         var response = new ServiceResponse<GetRecipeDto>();

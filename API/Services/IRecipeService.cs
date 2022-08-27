@@ -10,6 +10,7 @@ public interface IRecipeService
     
     Task<ServiceResponse<GetRecipeDto>> CreateRecipe(AddRecipeDto addRecipeDto);
     Task<ServiceResponse<GetRecipeDto>> RetrieveRecipe(int id);
+    Task<ServiceResponse<DeleteRecipeDto>> DeleteRecipe(int id);
 
     Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto);
     // TODO: CRUD
