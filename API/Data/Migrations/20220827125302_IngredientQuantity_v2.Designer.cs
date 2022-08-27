@@ -2,6 +2,7 @@
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(FoodAppContext))]
-    partial class FoodAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220827125302_IngredientQuantity_v2")]
+    partial class IngredientQuantity_v2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
@@ -45,15 +47,10 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
 
                     b.ToTable("IngredientQuantities");
                 });
@@ -77,6 +74,21 @@ namespace API.Data.Migrations
                     b.ToTable("Recipes");
                 });
 
+            modelBuilder.Entity("IngredientIngredientQuantity", b =>
+                {
+                    b.Property<int>("IngredientQuantitiesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IngredientsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("IngredientQuantitiesId", "IngredientsId");
+
+                    b.HasIndex("IngredientsId");
+
+                    b.ToTable("IngredientIngredientQuantity");
+                });
+
             modelBuilder.Entity("IngredientRecipe", b =>
                 {
                     b.Property<int>("IngredientsId")
@@ -92,15 +104,19 @@ namespace API.Data.Migrations
                     b.ToTable("IngredientRecipe");
                 });
 
-            modelBuilder.Entity("API.Entities.IngredientQuantity", b =>
+            modelBuilder.Entity("IngredientIngredientQuantity", b =>
                 {
-                    b.HasOne("API.Entities.Ingredient", "Ingredient")
-                        .WithMany("IngredientQuantities")
-                        .HasForeignKey("IngredientId")
+                    b.HasOne("API.Entities.IngredientQuantity", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientQuantitiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Ingredient");
+                    b.HasOne("API.Entities.Ingredient", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("IngredientRecipe", b =>
@@ -116,11 +132,6 @@ namespace API.Data.Migrations
                         .HasForeignKey("RecipesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("API.Entities.Ingredient", b =>
-                {
-                    b.Navigation("IngredientQuantities");
                 });
 #pragma warning restore 612, 618
         }

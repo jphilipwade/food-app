@@ -94,4 +94,35 @@ public class IngredientService : IIngredientService
     {
         throw new NotImplementedException();
     }
+
+    public async Task<ServiceResponse<GetIngredientQuantityDto>> AddIngredientQuantity(AddIngredientQuantityDto addIngredientQuantityDto)
+    {
+        var response = new ServiceResponse<GetIngredientQuantityDto>();
+
+        try
+        {
+            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == addIngredientQuantityDto.IngredientId);
+
+            if (ingredient is null)
+            {
+                response.Success = false;
+                response.Message = "Ingredient not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var newIngredientQuantity = _mapper.Map<IngredientQuantity>(addIngredientQuantityDto);
+            newIngredientQuantity.Ingredient = ingredient;
+            await _context.IngredientQuantities.AddAsync(newIngredientQuantity);
+            await _context.SaveChangesAsync();
+            response.Data = _mapper.Map<GetIngredientQuantityDto>(newIngredientQuantity);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+        }
+
+        return response;
+    }
 }
