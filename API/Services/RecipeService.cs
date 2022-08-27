@@ -40,6 +40,55 @@ public class RecipeService : IRecipeService
         return response;
     }
 
+    public async Task<ServiceResponse<GetRecipeDto>> CreateRecipe(AddRecipeDto addRecipeDto)
+    {
+        var response = new ServiceResponse<GetRecipeDto>();
+
+        try
+        {
+            var newRecipe = _mapper.Map<Recipe>(addRecipeDto);
+            await _context.Recipes.AddAsync(newRecipe);
+            await _context.SaveChangesAsync();
+            response.Data = _mapper.Map<GetRecipeDto>(newRecipe);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+        }
+        
+        return response;
+    }
+
+    public async Task<ServiceResponse<GetRecipeDto>> RetrieveRecipe(int id)
+    {
+        var response = new ServiceResponse<GetRecipeDto>();
+        
+        try
+        {
+            var recipe = await _context.Recipes
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.Ingredient)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (recipe is null)
+            {
+                response.Success = false;
+                response.Message = "Recipe not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
+            }
+
+            response.Data = _mapper.Map<GetRecipeDto>(recipe);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+        }
+        
+        return response;
+    }
+
     public async Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
     {
         var response = new ServiceResponse<GetRecipeDto>();

@@ -3,19 +3,16 @@ using API.Dtos.Recipe;
 using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
 public class RecipesController : BaseApiController
 {
     private readonly IRecipeService _recipeService;
-    private readonly FoodAppContext _context;
 
-    public RecipesController(IRecipeService recipeService, FoodAppContext context)
+    public RecipesController(IRecipeService recipeService)
     {
         _recipeService = recipeService;
-        _context = context;
     }
 
     [HttpGet]
@@ -26,7 +23,22 @@ public class RecipesController : BaseApiController
     }
 
     [HttpPost]
-    [Route("ingredient")]
+    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipe(AddRecipeDto addRecipeDto)
+    {
+        var result = await _recipeService.CreateRecipe(addRecipeDto);
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
+    }
+    
+    [HttpGet]
+    [Route("{id:int}")]
+    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> GetRecipe(int id)
+    {
+        var result = await _recipeService.RetrieveRecipe(id);
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
+    }
+    
+    [HttpPost]
+    [Route("ingredients")]
     public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
     {
         var result = await _recipeService.CreateRecipeIngredientQuantity(addRecipeIngredientQuantityDto);
