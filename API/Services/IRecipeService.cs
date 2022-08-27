@@ -10,5 +10,6 @@ public interface IRecipeService
 
     // TODO: CRUD
     
-    Task<ServiceResponse<GetRecipeDto>> AddRecipeIngredient(AddRecipeIngredientDto addRecipeIngredientDto);
+    Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto);
+    // TODO: CRUD
 }

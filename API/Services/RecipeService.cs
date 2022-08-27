@@ -23,7 +23,11 @@ public class RecipeService : IRecipeService
 
         try
         {
-            var recipes = await _context.Recipes.Include(r => r.Ingredients).ToListAsync();
+            var recipes = await _context.Recipes
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.Ingredient)
+                .ToListAsync();
+            
             var data = recipes.Select(r => _mapper.Map<GetRecipeDto>(r));
             response.Data = data;
         }
@@ -36,7 +40,7 @@ public class RecipeService : IRecipeService
         return response;
     }
 
-    public async Task<ServiceResponse<GetRecipeDto>> AddRecipeIngredient(AddRecipeIngredientDto addRecipeIngredientDto)
+    public async Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
     {
         var response = new ServiceResponse<GetRecipeDto>();
 
@@ -44,26 +48,31 @@ public class RecipeService : IRecipeService
         {
             var recipe = await _context.Recipes
                 .Include(r => r.Ingredients)
-                .FirstOrDefaultAsync(r => r.Id == addRecipeIngredientDto.RecipeId);
-
+                .FirstOrDefaultAsync(r => r.Id == addRecipeIngredientQuantityDto.RecipeId);
+            
             if (recipe is null)
             {
                 response.Success = false;
                 response.Message = "Recipe not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
-
-            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == addRecipeIngredientDto.IngredientId);
             
-            if (ingredient is null)
+            var ingredientQuantity = await _context.IngredientQuantities
+                .Include(i=>i.Ingredient)
+                .FirstOrDefaultAsync(i => i.Id == addRecipeIngredientQuantityDto.IngredientQuantityId);
+            
+            if (ingredientQuantity is null)
             {
                 response.Success = false;
-                response.Message = "Ingredient not found";
+                response.Message = "Ingredient quantity not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
             
-            recipe.Ingredients.Add(ingredient);
+            recipe.Ingredients.Add(ingredientQuantity);
             await _context.SaveChangesAsync();
+
             response.Data = _mapper.Map<GetRecipeDto>(recipe);
         }
         catch (Exception e)
@@ -73,4 +82,6 @@ public class RecipeService : IRecipeService
         }
         return response;
     }
+
+  
 }

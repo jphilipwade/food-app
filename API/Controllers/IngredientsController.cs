@@ -38,4 +38,13 @@ public class IngredientsController : BaseApiController
         var result = await _ingredientService.RetrieveIngredient(id);
         return result.Success ? Ok(result) : StatusCode(result.StatusCode, new {Message = result.Message});
     }
+
+    [HttpPost]
+    [Route("quantity")]
+    public async Task<ActionResult<ServiceResponse<GetIngredientQuantityDto>>> AddIngredientQuantity(
+        AddIngredientQuantityDto addIngredientQuantityDto)
+    {
+        var result = await _ingredientService.AddIngredientQuantity(addIngredientQuantityDto);
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new {Message = result.Message});
+    }
 }

@@ -14,5 +14,8 @@ public class AutomapperProfile : Profile
         
         CreateMap<Recipe, GetRecipeDto>();
         CreateMap<AddIngredientDto, Ingredient>();
+
+        CreateMap<AddIngredientQuantityDto, IngredientQuantity>();
+        CreateMap<IngredientQuantity, GetIngredientQuantityDto>();
     }
 }

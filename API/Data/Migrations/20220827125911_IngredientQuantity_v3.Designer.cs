@@ -2,6 +2,7 @@
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(FoodAppContext))]
-    partial class FoodAppContextModelSnapshot : ModelSnapshot
+    [Migration("20220827125911_IngredientQuantity_v3")]
+    partial class IngredientQuantity_v3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
@@ -77,7 +79,7 @@ namespace API.Data.Migrations
                     b.ToTable("Recipes");
                 });
 
-            modelBuilder.Entity("IngredientQuantityRecipe", b =>
+            modelBuilder.Entity("IngredientRecipe", b =>
                 {
                     b.Property<int>("IngredientsId")
                         .HasColumnType("INTEGER");
@@ -89,7 +91,7 @@ namespace API.Data.Migrations
 
                     b.HasIndex("RecipesId");
 
-                    b.ToTable("IngredientQuantityRecipe");
+                    b.ToTable("IngredientRecipe");
                 });
 
             modelBuilder.Entity("API.Entities.IngredientQuantity", b =>
@@ -103,9 +105,9 @@ namespace API.Data.Migrations
                     b.Navigation("Ingredient");
                 });
 
-            modelBuilder.Entity("IngredientQuantityRecipe", b =>
+            modelBuilder.Entity("IngredientRecipe", b =>
                 {
-                    b.HasOne("API.Entities.IngredientQuantity", null)
+                    b.HasOne("API.Entities.Ingredient", null)
                         .WithMany()
                         .HasForeignKey("IngredientsId")
                         .OnDelete(DeleteBehavior.Cascade)
