@@ -76,6 +76,7 @@ public class RecipeService : IRecipeService
                 response.Success = false;
                 response.Message = "Recipe not found";
                 response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
             }
 
             response.Data = _mapper.Map<GetRecipeDto>(recipe);
@@ -89,10 +90,32 @@ public class RecipeService : IRecipeService
         return response;
     }
 
-    public async Task<ServiceResponse<DeleteRecipeDto>> DeleteRecipe(int id)
+    public async Task<ServiceResponse<string>> DeleteRecipe(int id)
     {
-        var response = new ServiceResponse<DeleteRecipeDto>();
+        var response = new ServiceResponse<string>();
 
+        try
+        {
+            var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
+            
+            if (recipe is null)
+            {
+                response.Success = false;
+                response.Message = "Recipe not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            _context.Recipes.Remove(recipe);
+            await _context.SaveChangesAsync();
+            response.StatusCode = StatusCodes.Status204NoContent;
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+        }
+        
         return response;
     }
 

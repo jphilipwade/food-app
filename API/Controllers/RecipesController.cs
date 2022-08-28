@@ -1,5 +1,4 @@
-﻿using API.Data;
-using API.Dtos.Recipe;
+﻿using API.Dtos.Recipe;
 using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +18,14 @@ public class RecipesController : BaseApiController
     public async Task<ActionResult<ServiceResponse<IEnumerable<GetRecipeDto>>>> GetRecipes()
     {
         var result = await _recipeService.GetAllRecipes();
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 
     [HttpPost]
     public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipe(AddRecipeDto addRecipeDto)
     {
         var result = await _recipeService.CreateRecipe(addRecipeDto);
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
     
     [HttpGet]
@@ -34,7 +33,14 @@ public class RecipesController : BaseApiController
     public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> GetRecipe(int id)
     {
         var result = await _recipeService.RetrieveRecipe(id);
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult<ServiceResponse<string>>> DeleteRecipe(int id)
+    {
+        var result = await _recipeService.DeleteRecipe(id);
+        return result.Success ? NoContent() : StatusCode(result.StatusCode, new { result.Message });
     }
     
     [HttpPost]
@@ -42,6 +48,6 @@ public class RecipesController : BaseApiController
     public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
     {
         var result = await _recipeService.CreateRecipeIngredientQuantity(addRecipeIngredientQuantityDto);
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { Message = result.Message });
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 }

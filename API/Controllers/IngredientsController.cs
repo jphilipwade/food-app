@@ -18,21 +18,21 @@ public class IngredientsController : BaseApiController
     public async Task<ActionResult<ServiceResponse<IEnumerable<GetIngredientDto>>>> GetIngredients()
     {
         var result = await _ingredientService.GetAllIngredients();
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new {Message = result.Message});
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 
     [HttpPost]
     public async Task<ActionResult<ServiceResponse<GetIngredientDto>>> AddIngredient(AddIngredientDto addIngredientDto)
     {
         var result = await _ingredientService.CreateIngredient(addIngredientDto);
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new {Message = result.Message});
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ServiceResponse<GetIngredientDto>>> GetIngredient(int id)
     {
         var result = await _ingredientService.RetrieveIngredient(id);
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new {Message = result.Message});
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 
     [HttpPost]
@@ -41,6 +41,6 @@ public class IngredientsController : BaseApiController
         AddIngredientQuantityDto addIngredientQuantityDto)
     {
         var result = await _ingredientService.AddIngredientQuantity(addIngredientQuantityDto);
-        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new {Message = result.Message});
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 }
