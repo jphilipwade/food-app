@@ -1,6 +1,6 @@
 ﻿namespace API.Dtos.Recipe;
 
-public class AddRecipeIngredientQuantityDto
+public class DeleteRecipeIngredientDto
 {
     public int RecipeId { get; set; }
     public int IngredientQuantityId { get; set; }
