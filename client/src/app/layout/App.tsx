@@ -1,31 +1,29 @@
 import { useEffect, useState } from "react";
+import { Recipe } from "../models/recipe";
 
 function App() {
-  const [products, setProducts] = useState([
-    { name: "bread", description: "bread" },
-    { name: "cheese", description: "cheese" }
-  ]);
+  const [products, setRecipes] = useState<Recipe[]>([]);
 
   useEffect(() => {
     fetch("https://localhost:7267/api/Recipes")
       .then(response => response.json())
       .then(data => {
-        setProducts(data.data);
+        setRecipes(data.data);
       })
 
 
   }, []);
 
   function addProduct() {
-    setProducts(prevState => [...prevState, { name: "milk", description: "milk" }])
+    setRecipes(prevState => [...prevState, { id: 99, name: "milk", description: "milk" }])
   }
 
   return (
     <div>
       <h1>Food App</h1>
       <ul>
-        {products.map((item, index) => (
-          <li key={index}>{item.name} - {item.description}</li>
+        {products.map(recipe => (
+          <li key={recipe.id}>{recipe.name} - {recipe.description}</li>
         ))}
       </ul>
       <button onClick={addProduct}>Add Product</button>
