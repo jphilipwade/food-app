@@ -1,24 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
 
 function App() {
+  const [products, setProducts] = useState([
+    { name: "bread", description: "bread" },
+    { name: "cheese", description: "cheese" }
+  ]);
+
+  useEffect(() => {
+    fetch("https://localhost:7267/api/Recipes")
+      .then(response => response.json())
+      .then(data => {
+        setProducts(data.data);
+      })
+
+
+  }, []);
+
+  function addProduct() {
+    setProducts(prevState => [...prevState, { name: "milk", description: "milk" }])
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Food App</h1>
+      <ul>
+        {products.map((item, index) => (
+          <li key={index}>{item.name} - {item.description}</li>
+        ))}
+      </ul>
+      <button onClick={addProduct}>Add Product</button>
     </div>
   );
 }
