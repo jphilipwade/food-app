@@ -118,8 +118,8 @@ public class RecipeService : IRecipeService
         
         return response;
     }
-
-    public async Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
+    
+    public async Task<ServiceResponse<GetRecipeDto>> CreateRecipeIngredientQuantity(AddRecipeIngredientDto addRecipeIngredientDto)
     {
         var response = new ServiceResponse<GetRecipeDto>();
 
@@ -127,29 +127,31 @@ public class RecipeService : IRecipeService
         {
             var recipe = await _context.Recipes
                 .Include(r => r.Ingredients)
-                .FirstOrDefaultAsync(r => r.Id == addRecipeIngredientQuantityDto.RecipeId);
+                .ThenInclude(i => i.Ingredient)
+                .FirstOrDefaultAsync(r => r.Id == addRecipeIngredientDto.RecipeId);
             
             if (recipe is null)
             {
                 response.Success = false;
-                response.Message = "Recipe not found";
+                response.Message = "Ingredient not found";
                 response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
             
-            var ingredientQuantity = await _context.IngredientQuantities
-                .Include(i=>i.Ingredient)
-                .FirstOrDefaultAsync(i => i.Id == addRecipeIngredientQuantityDto.IngredientQuantityId);
+            var ingredient = await _context.Ingredients.FirstOrDefaultAsync(i => i.Id == addRecipeIngredientDto.IngredientId);
             
-            if (ingredientQuantity is null)
+            if (ingredient is null)
             {
                 response.Success = false;
-                response.Message = "Ingredient quantity not found";
+                response.Message = "Ingredient not found";
                 response.StatusCode = StatusCodes.Status404NotFound;
                 return response;
             }
-            
-            recipe.Ingredients.Add(ingredientQuantity);
+
+            var newIngredientQuantity = _mapper.Map<IngredientQuantity>(addRecipeIngredientDto);
+            newIngredientQuantity.Ingredient = ingredient;
+            var ingredientQuantity = await _context.IngredientQuantities.AddAsync(newIngredientQuantity);
+            recipe.Ingredients.Add(newIngredientQuantity);
             await _context.SaveChangesAsync();
 
             response.Data = _mapper.Map<GetRecipeDto>(recipe);
@@ -159,8 +161,49 @@ public class RecipeService : IRecipeService
             response.Success = false;
             response.Message = e.Message;
         }
+        
         return response;
     }
 
-  
+    public async Task<ServiceResponse<GetRecipeDto>> DeleteRecipeIngredientQuantity(DeleteRecipeIngredientDto deleteRecipeIngredientDto)
+    {
+        var response = new ServiceResponse<GetRecipeDto>();
+
+        try
+        {
+            var recipe = await _context.Recipes          
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.Ingredient)
+                .FirstOrDefaultAsync(r => r.Id == deleteRecipeIngredientDto.RecipeId);
+            
+            if (recipe is null)
+            {
+                response.Success = false;
+                response.Message = "Recipe not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            var ingredientQuantity = recipe.Ingredients.FirstOrDefault(i => i.Id == deleteRecipeIngredientDto.IngredientQuantityId);
+            if (ingredientQuantity is null)
+            {
+                response.Success = false;
+                response.Message = "IngredientQuantity not found";
+                response.StatusCode = StatusCodes.Status404NotFound;
+                return response;
+            }
+
+            recipe.Ingredients.Remove(ingredientQuantity);
+            _context.IngredientQuantities.Remove(ingredientQuantity);
+            await _context.SaveChangesAsync();
+            response.Data = _mapper.Map<GetRecipeDto>(recipe);
+        }
+        catch (Exception e)
+        {
+            response.Success = false;
+            response.Message = e.Message;
+        }
+        
+        return response;
+    }
 }

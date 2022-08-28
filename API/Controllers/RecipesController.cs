@@ -45,9 +45,18 @@ public class RecipesController : BaseApiController
     
     [HttpPost]
     [Route("ingredients")]
-    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipeIngredientQuantity(AddRecipeIngredientQuantityDto addRecipeIngredientQuantityDto)
+    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> AddRecipeIngredientQuantity(AddRecipeIngredientDto addRecipeIngredientDto)
     {
-        var result = await _recipeService.CreateRecipeIngredientQuantity(addRecipeIngredientQuantityDto);
+        var result = await _recipeService.CreateRecipeIngredientQuantity(addRecipeIngredientDto);
+        return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
+
+    }
+    
+    [HttpDelete]
+    [Route("ingredients")]
+    public async Task<ActionResult<ServiceResponse<GetRecipeDto>>> DeleteRecipeIngredientQuantity(DeleteRecipeIngredientDto deleteRecipeIngredientDto)
+    {
+        var result = await _recipeService.DeleteRecipeIngredientQuantity(deleteRecipeIngredientDto);
         return result.Success ? Ok(result) : StatusCode(result.StatusCode, new { result.Message });
     }
 }
