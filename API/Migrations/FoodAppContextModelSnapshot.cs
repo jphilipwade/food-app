@@ -2,18 +2,16 @@
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace API.Data.Migrations
+namespace API.Migrations
 {
     [DbContext(typeof(FoodAppContext))]
-    [Migration("20220826064652_InitialCreate")]
-    partial class InitialCreate
+    partial class FoodAppContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
@@ -41,6 +39,25 @@ namespace API.Data.Migrations
                     b.ToTable("Ingredients");
                 });
 
+            modelBuilder.Entity("API.Entities.IngredientQuantity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("IngredientQuantities");
+                });
+
             modelBuilder.Entity("API.Entities.Recipe", b =>
                 {
                     b.Property<int>("Id")
@@ -60,48 +77,50 @@ namespace API.Data.Migrations
                     b.ToTable("Recipes");
                 });
 
-            modelBuilder.Entity("API.Entities.RecipeIngredient", b =>
+            modelBuilder.Entity("IngredientQuantityRecipe", b =>
                 {
-                    b.Property<int>("RecipeId")
+                    b.Property<int>("IngredientsId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("IngredientId")
+                    b.Property<int>("RecipesId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("RecipeId", "IngredientId");
+                    b.HasKey("IngredientsId", "RecipesId");
 
-                    b.HasIndex("IngredientId");
+                    b.HasIndex("RecipesId");
 
-                    b.ToTable("RecipeIngredients");
+                    b.ToTable("IngredientQuantityRecipe");
                 });
 
-            modelBuilder.Entity("API.Entities.RecipeIngredient", b =>
+            modelBuilder.Entity("API.Entities.IngredientQuantity", b =>
                 {
                     b.HasOne("API.Entities.Ingredient", "Ingredient")
-                        .WithMany("Recipes")
+                        .WithMany("IngredientQuantities")
                         .HasForeignKey("IngredientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.Recipe", "Recipe")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
+                    b.Navigation("Ingredient");
+                });
+
+            modelBuilder.Entity("IngredientQuantityRecipe", b =>
+                {
+                    b.HasOne("API.Entities.IngredientQuantity", null)
+                        .WithMany()
+                        .HasForeignKey("IngredientsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Ingredient");
-
-                    b.Navigation("Recipe");
+                    b.HasOne("API.Entities.Recipe", null)
+                        .WithMany()
+                        .HasForeignKey("RecipesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.Entities.Ingredient", b =>
                 {
-                    b.Navigation("Recipes");
-                });
-
-            modelBuilder.Entity("API.Entities.Recipe", b =>
-                {
-                    b.Navigation("Ingredients");
+                    b.Navigation("IngredientQuantities");
                 });
 #pragma warning restore 612, 618
         }
