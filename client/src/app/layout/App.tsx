@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Recipes from "../../features/recipe/Recipes";
 import { Recipe } from "../models/recipe";
@@ -20,11 +21,11 @@ function App() {
   }
 
   return (
-    <div>
-      <h1>Food App</h1>
+    <>
+      <Typography variant="h1">Food App</Typography>
       <Recipes recipes={recipes} addRecipe={addRecipe} />
 
-    </div>
+    </>
   );
 }
 

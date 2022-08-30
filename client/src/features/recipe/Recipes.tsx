@@ -1,3 +1,4 @@
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { Recipe } from "../../app/models/recipe"
 
 interface Props {
@@ -8,11 +9,18 @@ interface Props {
 export default function Recipes({ recipes, addRecipe }: Props) {
     return (
         <>
-            <ul>
+            <List>
                 {recipes.map(recipe => (
-                    <li key={recipe.id}>{recipe.name} - {recipe.description} - {recipe.ingredients?.map(i => i.ingredient.name)}</li>
+                    <ListItem key={recipe.id}>
+                        <ListItemAvatar>
+                            <Avatar src={recipe.description} />
+                        </ListItemAvatar>
+                        <ListItemText>
+                            {recipe.name} - {recipe.description}
+                        </ListItemText>
+                    </ListItem>
                 ))}
-            </ul>
+            </List>
             <button onClick={addRecipe}>Add Product</button>
         </>
     )
